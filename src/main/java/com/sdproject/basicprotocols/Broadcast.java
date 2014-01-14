@@ -38,10 +38,11 @@ public class Broadcast {
         for (int i = 0; i < this.sockets.size(); i++) {
             Socket machine = this.sockets.get(i);
 
-            header = new Header("data", machine.getInetAddress().getHostAddress(), this.numberMessage++);
+            header = new Header("data", machine.getInetAddress().getHostAddress(), this.numberMessage);
             message = new Message(header, content);
-
+            
             Utils.sendMessage(machine, message);
+            this.numberMessage++;
         }
     }
 

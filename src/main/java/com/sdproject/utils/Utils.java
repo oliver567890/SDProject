@@ -98,7 +98,9 @@ public class Utils {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        System.out.println("-- MESSAGE SENT --");
         System.out.println(message.toString());
+        System.out.println("------------------");
     }
 
     public static Message getMessage(Socket socket) {
@@ -108,7 +110,9 @@ public class Utils {
             input = new ObjectInputStream(socket.getInputStream());
             message = (Message) input.readObject();
             input.close();
+            System.out.println("-- MESSAGE RECEIVED --");
             System.out.println(message.toString());
+            System.out.println("----------------------");
             return message;
         } catch (IOException ex) {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);

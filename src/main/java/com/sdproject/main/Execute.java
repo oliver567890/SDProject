@@ -10,6 +10,7 @@ import com.sdproject.basicprotocols.Pipeline;
 import com.sdproject.basicprotocols.Tree;
 import com.sdproject.basicprotocols.Unicast;
 import com.sdproject.utils.Utils;
+import complexprotocols.UniformDiffusion;
 
 /**
  *
@@ -97,8 +98,33 @@ public class Execute {
         }
     }
 
-    private static void runUniform(String typeMachine, String[] params) {
-        
+    private static void runUniform(String typeMachine, String[] parameters) {
+        UniformDiffusion uniform;
+        int port = Integer.parseInt(parameters[2]);
+        List<String> destinations;
+        int index;
+
+        if (typeMachine.equals("-sender")) {
+            index = 5;
+            int portInput = port;
+            int portOutput = Integer.parseInt(parameters[3]);
+            String sequencer = parameters[4];
+            destinations = Utils.getAddressesFromConsole(parameters, index);
+            
+            uniform = new UniformDiffusion(portInput, portOutput, destinations, sequencer);
+            uniform.runSenderProcess("This is a new message");
+
+        } else if (typeMachine.equals("-sequencer")) {
+            int portInput = port;
+            int portOutput = Integer.parseInt(parameters[3]);
+
+            uniform = new UniformDiffusion(portInput, portOutput);
+            uniform.runSequencerProcess();
+
+        } else if (typeMachine.equals("-receiver")) {
+            uniform = new UniformDiffusion(port);
+            uniform.runReceiverProcess();
+        }
     }
 
     private static void errorWithParameters() {
