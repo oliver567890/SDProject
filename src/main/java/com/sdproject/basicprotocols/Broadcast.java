@@ -42,8 +42,9 @@ public class Broadcast {
             message = new Message(header, content);
             
             Utils.sendMessage(machine, message);
-            this.numberMessage++;
         }
+        
+        this.numberMessage++;
     }
 
     public void runReceiverProcess() {
