@@ -118,11 +118,13 @@ public class Execute {
             int portInput = port;
             int portOutput = Integer.parseInt(parameters[3]);
 
-            uniform = new UniformDiffusion(portInput, portOutput);
+            uniform = new UniformDiffusion("sequencer", portInput, portOutput);
             uniform.runSequencerProcess();
 
         } else if (typeMachine.equals("-receiver")) {
-            uniform = new UniformDiffusion(port);
+            int portInput = port;
+            int portOutput = Integer.parseInt(parameters[3]);
+            uniform = new UniformDiffusion("receiver", portInput, portOutput);
             uniform.runReceiverProcess();
         }
     }

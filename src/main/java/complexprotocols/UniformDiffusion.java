@@ -46,36 +46,36 @@ public class UniformDiffusion {
         this.sender = null;
     }
 
-    // Constructor for Receivers.
-    public UniformDiffusion(int portReceiver) {
-        this.sender = Utils.openServerConnexion(portReceiver);
-        this.sequencer = Utils.openServerConnexion(portReceiver++);
-        this.receivers = null;
+    // Constructor for Sequencer & Receiver.
+    public UniformDiffusion(String sequencerOrReceiver, int portForSender, int portInput) {
+        
+        if (sequencerOrReceiver.equals("sequencer")) {
+            this.sender = Utils.openServerConnexion(portForSender);
 
-        // Initialize not delivered message's table.
-        this.notDeliveredMessages = new HashMap<Integer, Message>();
-    }
+            Message message = Utils.getMessage(this.sender);
+            String stringAddresses = message.getInformation();
+            List<String> addresses = Utils.convertStringToList(stringAddresses);
 
-    // Constructor for Sequencer.
-    public UniformDiffusion(int portSequencer, int portForReceivers) {
-        this.sender = Utils.openServerConnexion(portSequencer);
+            this.receivers = Utils.openMultipleClientConnexions(addresses, portInput);
+            this.sequencer = null;
 
-        Message message = Utils.getMessage(this.sender);
-        String stringAddresses = message.getInformation();
-        List<String> addresses = Utils.convertStringToList(stringAddresses);
+            // Initialize sequence table.
+            this.sequenceTable = new HashMap<String, List<Integer>>();
 
-        this.receivers = Utils.openMultipleClientConnexions(addresses, portForReceivers);
-        this.sequencer = null;
+            for (String address : addresses) {
+                this.sequenceTable.put(address, new ArrayList<Integer>());
+            }
 
-        // Initialize sequence table.
-        this.sequenceTable = new HashMap<String, List<Integer>>();
+            // Initialize sequence number.
+            this.sequenceNumber = 1;
+        } else {
+            this.sender = Utils.openServerConnexion(portForSender);
+            this.sequencer = Utils.openServerConnexion(portInput);
+            this.receivers = null;
 
-        for (String address : addresses) {
-            this.sequenceTable.put(address, new ArrayList<Integer>());
+            // Initialize not delivered message's table.
+            this.notDeliveredMessages = new HashMap<Integer, Message>();
         }
-
-        // Initialize sequence number.
-        this.sequenceNumber = 1;
     }
 
     public void runSenderProcess(String content) {
